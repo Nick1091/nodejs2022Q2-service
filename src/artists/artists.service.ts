@@ -1,52 +1,58 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { IArtist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Injectable()
 export class ArtistsService {
-  data: string;
-  db: IArtist[];
-  constructor() {
-    this.db = [];
-  }
+  private static artists: Array<IArtist> = [];
+
   async create(createArtistDto: CreateArtistDto): Promise<IArtist> {
     const newArtist: IArtist = {
       ...createArtistDto,
-      id: v4(),
+      id: uuidv4(),
     };
-    // const data = (await db.create(this.data, newArtist)) as IArtist;
-    // return data;
+    ArtistsService.artists.push(newArtist);
     return newArtist;
   }
 
   async findAll() {
-    return `This action returns all artists`;
+    return ArtistsService.artists.map((artist: IArtist) => artist);
   }
 
   async findOne(id: string) {
-    return `This action returns a #${id} artist`;
+    const oneArtist = ArtistsService.artists.find((artist: IArtist) => {
+      return id === artist.id;
+    });
+    if (!oneArtist) {
+      throw new NotFoundException('Artist not found.');
+    }
+    return oneArtist;
   }
 
-  // async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-  //   const artist = this.artists.find((item: Artist) => item.id === id);
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<IArtist> {
+    const artist = ArtistsService.artists.find(
+      (item: IArtist) => item.id === id,
+    );
 
-  //   if (artist) {
-  //     Object.assign(artist, updateArtistDto);
-  //   } else {
-  //     throw new NotFoundException(`There is no artist with id: ${id}`);
-  //   }
-  //   return artist;
-  // }
+    if (artist) {
+      Object.assign(artist, updateArtistDto);
+    } else {
+      throw new NotFoundException(`There is no artist with id: ${id}`);
+    }
+    return artist;
+  }
 
-  // async remove(id: string): Promise<void> {
-  //   const artist: Artist = this.artists.find((item: Artist) => item.id === id);
+  async remove(id: string): Promise<void> {
+    const artist = ArtistsService.artists.findIndex(
+      (item: IArtist) => item.id === id,
+    );
 
-  //   if (artist) {
-  //     this.artists = this.artists.filter((item) => item.id !== id);
-  //   } else {
-  //     throw new NotFoundException(`There is no artist with id: ${id}`);
-  //   }
-  // }
+    if (artist !== -1) {
+      ArtistsService.artists.splice(artist, 1);
+    } else {
+      throw new NotFoundException(`There is no artist with id: ${id}`);
+    }
+  }
 }
