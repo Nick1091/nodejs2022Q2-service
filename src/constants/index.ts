@@ -2,10 +2,10 @@ export const VERSIONS = {
   FIRST: 1,
 };
 export const ERRORS_MSGS = {
-  INVALID_UUID: 'Validation failed (uuid v4 is expected)',
+  INVALID_UUID: 'Bad request. Validation failed (uuid v4 is expected)',
   USER: {
     USER_NOT_FOUND: 'User not found.',
-    PASSWORD_WRONG: 'Old Pasword is wrong',
+    PASSWORD_WRONG: 'Old Password is wrong',
   },
   TRACK: {
     NOT_FOUND: (id: string) => `There is no track with id: ${id}`,
