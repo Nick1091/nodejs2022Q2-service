@@ -436,7 +436,7 @@ paths:
                 $ref: '#/components/schemas/Album'
         400:
           description: Bad request. body does not contain required fields
-  /albu/{id}:
+  /album/{id}:
     parameters:
       - name: id
         in: path
