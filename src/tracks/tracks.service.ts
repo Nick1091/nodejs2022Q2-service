@@ -53,4 +53,22 @@ export class TrackService {
       throw new NotFoundException(`There is no track with id: ${id}`);
     }
   }
+
+  async removeAlbum(id: string): Promise<void> {
+    const tracks = TrackService.tracks.map((item) =>
+      item.albumId === id ? { ...item, albumId: null } : item,
+    );
+    TrackService.tracks = tracks;
+  }
+
+  async removeArtist(id: string): Promise<void> {
+    const tracks = TrackService.tracks.map((item) =>
+      item.artistId === id ? { ...item, artistId: null } : item,
+    );
+    TrackService.tracks = tracks;
+  }
+
+  async findTrack(id: string) {
+    return TrackService.tracks.find((track: ITrack) => id === track.id);
+  }
 }

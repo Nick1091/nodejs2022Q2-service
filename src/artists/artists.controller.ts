@@ -10,6 +10,9 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
+import { AlbumsService } from 'src/albums/albums.service';
+import { FavsService } from 'src/favs/favs.service';
+import { TrackService } from 'src/tracks/tracks.service';
 import { IArtist } from './artists.interface';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -17,7 +20,12 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService) {}
+  constructor(
+    private readonly favsService: FavsService,
+    private readonly artistsService: ArtistsService,
+    private readonly trackService: TrackService,
+    private readonly albumsService: AlbumsService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -49,6 +57,9 @@ export class ArtistsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.trackService.removeArtist(id);
+    await this.albumsService.removeArtist(id);
+    await this.favsService.removeArtistId(id);
     return await this.artistsService.remove(id);
   }
 }

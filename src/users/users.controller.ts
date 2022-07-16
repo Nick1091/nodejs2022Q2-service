@@ -12,13 +12,12 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import { validate as uuidValidate } from 'uuid';
+import { version as uuidVersion } from 'uuid';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IPostUser } from './users.interface';
-
-import { validate as uuidValidate } from 'uuid';
-import { version as uuidVersion } from 'uuid';
 
 export const uuidValidateV4 = (uuid: string): boolean => {
   return uuidValidate(uuid) && uuidVersion(uuid) === 4;

@@ -30,6 +30,10 @@ export class AlbumsService {
     return oneArtist;
   }
 
+  async findAlbum(id: string) {
+    return AlbumsService.albums.find((artist: IAlbum) => id === artist.id);
+  }
+
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
     const album = AlbumsService.albums.find((item: IAlbum) => item.id === id);
 
@@ -51,5 +55,13 @@ export class AlbumsService {
     } else {
       throw new NotFoundException(`There is no album with id: ${id}`);
     }
+  }
+
+  async removeArtist(id: string): Promise<void> {
+    AlbumsService.albums = AlbumsService.albums.map((album) => {
+      if (album.id === id) {
+        return { ...album, artistId: null };
+      } else return album;
+    });
   }
 }

@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { VERSIONS } from 'src/constants';
 import { v4 as uuidv4 } from 'uuid';
+import { VERSIONS } from 'src/constants';
 import { User } from './entities/user.entity';
 import { IPostUser, IUpdatePassword, IUsersStart } from './users.interface';
 

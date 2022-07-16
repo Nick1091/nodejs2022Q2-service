@@ -31,6 +31,10 @@ export class ArtistsService {
     return oneArtist;
   }
 
+  async findArtist(id: string) {
+    return ArtistsService.artists.find((artist: IArtist) => id === artist.id);
+  }
+
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<IArtist> {
     const artist = ArtistsService.artists.find(
       (item: IArtist) => item.id === id,

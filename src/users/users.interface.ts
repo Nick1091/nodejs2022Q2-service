@@ -8,9 +8,11 @@ export interface IUser {
 export interface IPostUser extends IUser {
   id: string; // uuid v4
 }
+
 export interface IUsersStart extends IPostUser {
   password: string;
 }
+
 export interface IUpdatePassword {
   oldPassword: string; // previous password
   newPassword: string; // new password

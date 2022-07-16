@@ -10,6 +10,9 @@ import {
   Put,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { ArtistsService } from 'src/artists/artists.service';
+import { FavsService } from 'src/favs/favs.service';
+import { TrackService } from 'src/tracks/tracks.service';
 import { IAlbum } from './albums.interface';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -17,11 +20,24 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) {}
+  constructor(
+    private readonly favsService: FavsService,
+    private readonly artistsService: ArtistsService,
+    private readonly albumsService: AlbumsService,
+    private readonly trackService: TrackService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+    if (createAlbumDto.artistId !== undefined) {
+      const artist = await this.artistsService.findArtist(
+        createAlbumDto.artistId,
+      );
+      createAlbumDto = artist
+        ? createAlbumDto
+        : { ...createAlbumDto, artistId: null };
+    }
     return await this.albumsService.create(createAlbumDto);
   }
 
@@ -43,12 +59,22 @@ export class AlbumsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
+    if (updateAlbumDto.artistId !== undefined) {
+      const artist = await this.artistsService.findArtist(
+        updateAlbumDto.artistId,
+      );
+      updateAlbumDto = artist
+        ? updateAlbumDto
+        : { ...updateAlbumDto, artistId: null };
+    }
     return await this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.trackService.removeAlbum(id);
+    await this.favsService.removeAlbumId(id);
     return await this.albumsService.remove(id);
   }
 }
