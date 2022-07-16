@@ -7,20 +7,19 @@
 
 ## Downloading
 
-```
-git clone {repository URL}
-```
+- git clone [URL](https://github.com/Nick1091/nodejs2022Q2-service)
+
 
 ## Installing NPM modules
 
-```
-npm install
-```
+- checkout develop branch
+- npm install
+
 
 ## Running application
 
 ```
-npm start
+npm run start:dev
 ```
 
 After starting the app on port (4000 as default) you can open
@@ -55,18 +54,8 @@ To run only specific test suite with authorization
 npm run test:auth -- <path to suite>
 ```
 
-### Auto-fix and format
+### Auto-fix
 
 ```
 npm run lint
 ```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
