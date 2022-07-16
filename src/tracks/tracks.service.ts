@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { ERRORS_MSGS } from 'src/constants';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ITrack } from './tracks.interface';
@@ -26,7 +27,7 @@ export class TrackService {
       return id === track.id;
     });
     if (!oneTrack) {
-      throw new NotFoundException('Track not found.');
+      throw new NotFoundException(ERRORS_MSGS.TRACK.NOT_FOUND(id));
     }
     return oneTrack;
   }
@@ -37,7 +38,7 @@ export class TrackService {
     if (track) {
       Object.assign(track, updateTrackDto);
     } else {
-      throw new NotFoundException(`There is no track with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.TRACK.NOT_FOUND(id));
     }
     return track;
   }
@@ -50,7 +51,7 @@ export class TrackService {
     if (track !== -1) {
       TrackService.tracks.splice(track, 1);
     } else {
-      throw new NotFoundException(`There is no track with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.TRACK.NOT_FOUND(id));
     }
   }
 

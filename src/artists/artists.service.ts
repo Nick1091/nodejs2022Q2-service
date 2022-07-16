@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { ERRORS_MSGS } from 'src/constants';
 import { IArtist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -26,7 +27,7 @@ export class ArtistsService {
       return id === artist.id;
     });
     if (!oneArtist) {
-      throw new NotFoundException('Artist not found.');
+      throw new NotFoundException(ERRORS_MSGS.ARTIST.NOT_FOUND(id));
     }
     return oneArtist;
   }
@@ -43,7 +44,7 @@ export class ArtistsService {
     if (artist) {
       Object.assign(artist, updateArtistDto);
     } else {
-      throw new NotFoundException(`There is no artist with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.ARTIST.NOT_FOUND(id));
     }
     return artist;
   }
@@ -56,7 +57,7 @@ export class ArtistsService {
     if (artist !== -1) {
       ArtistsService.artists.splice(artist, 1);
     } else {
-      throw new NotFoundException(`There is no artist with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.ARTIST.NOT_FOUND(id));
     }
   }
 }

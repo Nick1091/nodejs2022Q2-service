@@ -3,6 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { ERRORS_MSGS } from 'src/constants';
 import { IAlbum } from 'src/albums/albums.interface';
 import { IArtist } from 'src/artists/artists.interface';
 import { ITrack } from 'src/tracks/tracks.interface';
@@ -14,7 +15,8 @@ export class FavsService {
   private static tracks: Array<string> = [];
 
   async createTrack(track: ITrack) {
-    if (!track) throw new UnprocessableEntityException("Track doesn't exists.");
+    if (!track)
+      throw new UnprocessableEntityException(ERRORS_MSGS.FAVS.DOES_EXIST_TRACK);
     const isTrackExist = FavsService.tracks.find((tr) => tr === track.id);
     if (!isTrackExist) FavsService.tracks.push(track.id);
     return track;
@@ -23,7 +25,7 @@ export class FavsService {
   async removeTrack(id: string, track: ITrack) {
     const isTrackIndex = FavsService.tracks.findIndex((tr) => tr === id);
     if (isTrackIndex === -1 || !track)
-      throw new NotFoundException(`There is no favorite track with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.FAVS.NOT_FOUND_TRACK(id));
     FavsService.tracks.splice(isTrackIndex, 1);
   }
 
@@ -43,7 +45,9 @@ export class FavsService {
 
   async createArtist(artist: IArtist) {
     if (!artist)
-      throw new UnprocessableEntityException("Artist doesn't exists.");
+      throw new UnprocessableEntityException(
+        ERRORS_MSGS.FAVS.DOES_EXIST_ARTIST,
+      );
     const isArtistExist = FavsService.artists.find((tr) => tr === artist.id);
     if (!isArtistExist) FavsService.artists.push(artist.id);
     return artist;
@@ -52,12 +56,13 @@ export class FavsService {
   async removeArtist(id: string, artist: IArtist) {
     const isArtistIndex = FavsService.artists.findIndex((tr) => tr === id);
     if (isArtistIndex === -1 || !artist)
-      throw new NotFoundException(`There is no favorite artist with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.FAVS.NOT_FOUND_ARTIST(id));
     FavsService.artists.splice(isArtistIndex, 1);
   }
 
   async createAlbum(album: IAlbum) {
-    if (!album) throw new UnprocessableEntityException("Album doesn't exists.");
+    if (!album)
+      throw new UnprocessableEntityException(ERRORS_MSGS.FAVS.DOES_EXIST_ALBUM);
     const isAlbumExist = FavsService.albums.find((tr) => tr === album.id);
     if (!isAlbumExist) FavsService.albums.push(album.id);
     return album;
@@ -66,7 +71,7 @@ export class FavsService {
   async removeAlbum(id: string, album: IAlbum) {
     const isAlbumIndex = FavsService.albums.findIndex((tr) => tr === id);
     if (isAlbumIndex === -1 || !album)
-      throw new NotFoundException(`There is no favorite album with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.FAVS.NOT_FOUND_ALBUM(id));
     FavsService.albums.splice(isAlbumIndex, 1);
   }
 

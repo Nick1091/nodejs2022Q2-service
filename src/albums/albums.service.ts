@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { ERRORS_MSGS } from 'src/constants';
 import { IAlbum } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -25,7 +26,7 @@ export class AlbumsService {
       return id === artist.id;
     });
     if (!oneArtist) {
-      throw new NotFoundException('Artist not found.');
+      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
     }
     return oneArtist;
   }
@@ -40,7 +41,7 @@ export class AlbumsService {
     if (album) {
       Object.assign(album, updateAlbumDto);
     } else {
-      throw new NotFoundException(`There is no album with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
     }
     return album;
   }
@@ -53,7 +54,7 @@ export class AlbumsService {
     if (album !== -1) {
       AlbumsService.albums.splice(album, 1);
     } else {
-      throw new NotFoundException(`There is no album with id: ${id}`);
+      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
     }
   }
 

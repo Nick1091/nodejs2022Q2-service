@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { VERSIONS } from 'src/constants';
+import { ERRORS_MSGS, VERSIONS } from 'src/constants';
 import { User } from './entities/user.entity';
 import { IPostUser, IUpdatePassword, IUsersStart } from './users.interface';
 
@@ -35,7 +35,7 @@ export class UserService {
       return id === user.id;
     });
     if (!oneUser) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException(ERRORS_MSGS.USER.USER_NOT_FOUND);
     }
     return oneUser;
   }
@@ -43,13 +43,13 @@ export class UserService {
   async update(id: string, data: IUpdatePassword): Promise<IUsersStart> {
     const index: number = UserService.users.findIndex((user) => user.id === id);
     if (index === -1) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException(ERRORS_MSGS.USER.USER_NOT_FOUND);
     }
     const password: boolean = UserService.users.some(
       (item) => item.password === data.oldPassword && item.id === id,
     );
     if (!password) {
-      throw new ForbiddenException('Old Pasword is wrong');
+      throw new ForbiddenException(ERRORS_MSGS.USER.PASSWORD_WRONG);
     }
     const newUser: IUsersStart = {
       ...UserService.users[index],
@@ -64,7 +64,7 @@ export class UserService {
   async remove(id: string): Promise<void> {
     const index: number = UserService.users.findIndex((post) => post.id === id);
     if (index === -1) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException(ERRORS_MSGS.USER.USER_NOT_FOUND);
     }
     UserService.users.splice(index, 1);
   }
