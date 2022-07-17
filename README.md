@@ -13,6 +13,7 @@
 ## Installing NPM modules
 
 - checkout develop branch
+- rename .env.example to .env
 - npm install
 
 
