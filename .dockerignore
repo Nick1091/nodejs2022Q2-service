@@ -1,0 +1,12 @@
+node_modules
+.git
+.idea
+Dockerfile
+.vscode
+dist
+.dockerignore
+database
+docker-compose.yaml
+test
+postgresdata
+.gitignore
