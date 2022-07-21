@@ -10,3 +10,5 @@ docker-compose.yaml
 test
 postgresdata
 .gitignore
+.env
+README.md

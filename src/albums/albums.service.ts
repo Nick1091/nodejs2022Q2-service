@@ -60,7 +60,7 @@ export class AlbumsService {
 
   async removeArtist(id: string): Promise<void> {
     AlbumsService.albums = AlbumsService.albums.map((album) => {
-      if (album.id === id) {
+      if (album.artistId === id) {
         return { ...album, artistId: null };
       } else return album;
     });
