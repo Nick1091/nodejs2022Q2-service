@@ -25,6 +25,7 @@ services:
       context: .
       dockerfile: ./database/Dockerfile
     restart: unless-stopped
+    command: postgres -c logging_collector=on
     env_file:
       - .env
     environment:
