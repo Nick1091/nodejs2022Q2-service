@@ -2,47 +2,55 @@ version: '3.9'
 services:
   app:
     container_name: app
-    build: 
-      context: .
-      dockerfile: ./Dockerfile
+    build: .
+      # context: .
+      # dockerfile: ./Dockerfile
     restart: unless-stopped
     env_file:
       - .env
     ports:
       - ${PORT}:${PORT}
     volumes:
-      - .:/app/
-      - /app/node_modules
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - postgres
     environment:
       - PORT=${PORT}
     networks:
       - custom-network
+    # command: npm run start:dev
   postgres:
     container_name: postgres
-    build: 
+    # image: postgres:latest 
+    build:
       context: .
       dockerfile: ./database/Dockerfile
     restart: unless-stopped
-    command: postgres -c logging_collector=on
+    # command: postgres -c logging_collector=on
+    # command:
+      # - sleep 5 #give the service some time to start
+      # - psql -U postgres -d test
+      # - psql -U postgres -d test -h db
     env_file:
       - .env
     environment:
-      - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - PGDATA:${PGDATA}
+      # - POSTGRES_PORT=${POSTGRES_PORT}
+      # - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD}
+      # - PGDATA={PG_DATA}
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - 5432:5432
+      # - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     networks:
       - custom-network
-
 volumes: 
-  postgres-data:
+  db:
 networks:
     custom-network:
-        driver: bridge 
+      name: custom-network
+      driver: bridge 

@@ -1,2 +1,3 @@
-FROM postgres:14.1-alpine
+FROM postgres:14.4-alpine
 CMD ["postgres", "-c", "log_statement=mod"]
+# FROM postgres
