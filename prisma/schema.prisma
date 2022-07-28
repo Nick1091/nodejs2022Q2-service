@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,44 +17,6 @@ model User {
   version   Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-model Artist {
-  id         String    @id @default(uuid())
-  name       String
-  grammy     Boolean
-  albums     Album[]
-  tracks     Track[]
-  favs       Favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId String?
-}
-
-model Album {
-  id         String    @id @default(uuid())
-  name       String
-  year       Int
-  artist     Artist?   @relation(fields: [artistId], references: [id])
-  artistId   String?
-  tracks     Track[]
-  favs       Favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId String?
-}
-
-model Track {
-  id         String    @id @default(uuid())
-  name       String
-  duration   Int
-  artist     Artist?   @relation(fields: [artistId], references: [id])
-  artistId   String?
-  albums     Album?    @relation(fields: [albumId], references: [id])
-  albumId    String?
-  favs       Favorite? @relation(fields: [favoriteId], references: [id], onDelete: SetNull)
-  favoriteId String?
-}
-
-model Favorite {
-  id      String   @id @default(uuid())
-  artists Artist[]
-  albums  Album[]
-  tracks  Track[]
+  @@map("users")
 }

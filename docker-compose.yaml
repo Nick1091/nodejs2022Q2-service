@@ -2,9 +2,9 @@ version: '3.9'
 services:
   app:
     container_name: app
-    build: .
-      # context: .
-      # dockerfile: ./Dockerfile
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     restart: unless-stopped
     env_file:
       - .env
@@ -17,39 +17,37 @@ services:
       - postgres
     environment:
       - PORT=${PORT}
+      # - POSTGRES_HOST=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
     networks:
       - custom-network
     # command: npm run start:dev
   postgres:
     container_name: postgres
-    # image: postgres:latest 
     build:
       context: .
       dockerfile: ./database/Dockerfile
     restart: unless-stopped
     # command: postgres -c logging_collector=on
-    # command:
-      # - sleep 5 #give the service some time to start
-      # - psql -U postgres -d test
-      # - psql -U postgres -d test -h db
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      # - POSTGRES_PORT=${POSTGRES_PORT}
-      # - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD}
-      # - PGDATA={PG_DATA}
+      - POSTGRES_USER:${POSTGRES_USER}
+      - POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
+      - POSTGRES_DB:${POSTGRES_DB}
+      - PGDATA:/var/lib/postgresql/data
+      # - PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - 5432:5432
-      # - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      - db:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+      # - pg_data:/var/lib/postgresql/data/pgdata
     networks:
       - custom-network
+    # host: 
+    #   - postgres
 volumes: 
-  db:
+  pg_data:
 networks:
     custom-network:
       name: custom-network

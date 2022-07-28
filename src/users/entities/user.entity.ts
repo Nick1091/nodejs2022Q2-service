@@ -1,6 +1,6 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
-export class User {
+export class Users {
   id: string; // uuid v4
   login: string;
 
@@ -8,9 +8,13 @@ export class User {
   password: string;
 
   version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-  constructor(partial: Partial<User>) {
+  @Transform(({ value }) => new Date(value).getTime())
+  createdAt: Date;
+
+  @Transform(({ value }) => new Date(value).getTime())
+  updatedAt: Date;
+
+  constructor(partial: Partial<Users>) {
     Object.assign(this, partial);
   }
 }

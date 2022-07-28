@@ -19,6 +19,6 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  await app.listen(PORT);
+  await app.listen(PORT, () => console.log(`Server listen port ${PORT}`));
 }
 bootstrap();

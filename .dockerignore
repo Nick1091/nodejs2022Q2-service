@@ -2,12 +2,12 @@ node_modules
 .git
 .idea
 .vscode
-dist
-.dockerignore
 database
 docker-compose.yaml
 test
-postgresdata
 .gitignore
-.env
+.dockerignore
+.env.example
+Dockerfile
 README.md
+dist
