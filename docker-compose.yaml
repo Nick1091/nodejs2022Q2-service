@@ -18,7 +18,7 @@ services:
     environment:
       - PORT=${PORT}
       # - POSTGRES_HOST=${POSTGRES_DB}
-      - POSTGRES_HOST=postgres
+      # - POSTGRES_HOST=postgres
     networks:
       - custom-network
     # command: npm run start:dev

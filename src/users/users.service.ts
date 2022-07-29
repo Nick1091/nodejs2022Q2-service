@@ -19,6 +19,7 @@ export class UserService {
       data: createUserDto,
     });
 
+    user.createdAt = user.updatedAt;
     return plainToInstance(Users, user);
   }
 
@@ -48,7 +49,6 @@ export class UserService {
       data: {
         password: data.newPassword,
         version: { increment: VERSIONS.FIRST },
-        updatedAt: new Date().toISOString(),
       },
     });
     return plainToInstance(Users, newUser);
