@@ -30,13 +30,18 @@ export class AlbumsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
-    if (createAlbumDto.artistId !== undefined) {
+    if (
+      createAlbumDto.artistId !== undefined &&
+      createAlbumDto.artistId !== null
+    ) {
       const artist = await this.artistsService.findArtist(
         createAlbumDto.artistId,
       );
       createAlbumDto = artist
         ? createAlbumDto
         : { ...createAlbumDto, artistId: null };
+    } else {
+      delete createAlbumDto.artistId;
     }
     return await this.albumsService.create(createAlbumDto);
   }
@@ -59,13 +64,18 @@ export class AlbumsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    if (updateAlbumDto.artistId !== undefined) {
+    if (
+      updateAlbumDto.artistId !== undefined &&
+      updateAlbumDto.artistId !== null
+    ) {
       const artist = await this.artistsService.findArtist(
         updateAlbumDto.artistId,
       );
       updateAlbumDto = artist
         ? updateAlbumDto
         : { ...updateAlbumDto, artistId: null };
+    } else {
+      delete updateAlbumDto.artistId;
     }
     return await this.albumsService.update(id, updateAlbumDto);
   }
@@ -73,8 +83,8 @@ export class AlbumsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    await this.trackService.removeAlbum(id);
-    await this.favsService.removeAlbumId(id);
+    // await this.trackService.removeAlbum(id);
+    // await this.favsService.removeAlbumId(id);
     return await this.albumsService.remove(id);
   }
 }

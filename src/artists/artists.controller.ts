@@ -29,7 +29,7 @@ export class ArtistsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createArtistDto: CreateArtistDto): Promise<IArtist> {
+  async create(@Body() createArtistDto: CreateArtistDto) {
     return await this.artistsService.create(createArtistDto);
   }
 
@@ -57,9 +57,9 @@ export class ArtistsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    await this.trackService.removeArtist(id);
-    await this.albumsService.removeArtist(id);
-    await this.favsService.removeArtistId(id);
+    // await this.trackService.removeArtist(id);
+    // await this.albumsService.removeArtist(id);
+    // await this.favsService.removeArtistId(id);
     return await this.artistsService.remove(id);
   }
 }

@@ -1,68 +1,85 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { ERRORS_MSGS } from 'src/constants';
 import { IAlbum } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AlbumsService {
-  private static albums: Array<IAlbum> = [];
-  async create(createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
-    const newAlbum: IAlbum = {
-      ...createAlbumDto,
-      id: uuidv4(),
-    };
-    AlbumsService.albums.push(newAlbum);
-    return newAlbum;
+  constructor(private prisma: PrismaService) {}
+
+  async create(createAlbumDto: CreateAlbumDto) {
+    if (!['name', 'year'].every((field: string) => field in createAlbumDto)) {
+      throw new BadRequestException('Body does not contain required fields');
+    }
+    return this.prisma.album.create({
+      data: {
+        ...createAlbumDto,
+      },
+    });
   }
 
   async findAll() {
-    return AlbumsService.albums.map((album: IAlbum) => album);
+    return this.prisma.album.findMany();
   }
 
   async findOne(id: string) {
-    const oneArtist = AlbumsService.albums.find((artist: IAlbum) => {
-      return id === artist.id;
+    console.log(id);
+    const album = await this.prisma.album.findFirst({
+      where: { id: id },
+      // select: { artist: true },
     });
-    if (!oneArtist) {
-      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
-    }
-    return oneArtist;
-  }
-
-  async findAlbum(id: string) {
-    return AlbumsService.albums.find((artist: IAlbum) => id === artist.id);
-  }
-
-  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
-    const album = AlbumsService.albums.find((item: IAlbum) => item.id === id);
-
-    if (album) {
-      Object.assign(album, updateAlbumDto);
-    } else {
+    if (!album) {
       throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
     }
     return album;
   }
 
-  async remove(id: string): Promise<void> {
-    const album = AlbumsService.albums.findIndex(
-      (item: IAlbum) => item.id === id,
-    );
-
-    if (album !== -1) {
-      AlbumsService.albums.splice(album, 1);
-    } else {
-      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
-    }
-  }
-
-  async removeArtist(id: string): Promise<void> {
-    AlbumsService.albums = AlbumsService.albums.map((album) => {
-      if (album.artistId === id) {
-        return { ...album, artistId: null };
-      } else return album;
+  async findAlbum(id: string) {
+    return await this.prisma.album.findFirst({
+      where: { id },
+      // select: { artist: true },
     });
   }
+
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
+    const album = await this.prisma.album.findFirst({
+      where: { id: id },
+      // select: { artist: true },
+    });
+
+    if (!album) {
+      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
+    }
+    return this.prisma.album.update({
+      where: { id },
+      data: { ...updateAlbumDto },
+    });
+  }
+
+  async remove(id: string) {
+    const album = await this.prisma.album.findFirst({
+      where: { id },
+      // select: { artist: true },
+    });
+
+    if (!album) {
+      throw new NotFoundException(ERRORS_MSGS.ALBUM.NOT_FOUND(id));
+    }
+    return this.prisma.album.delete({ where: { id } });
+  }
+
+  // async removeArtist(id: string): Promise<void> {
+  //   AlbumsService.albums = AlbumsService.albums.map((album) => {
+  //     if (album.artistId === id) {
+  //       return { ...album, artistId: null };
+  //     } else return album;
+  //   });
+  // }
 }

@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
+  // throw Error('err');
   const app = await NestFactory.create(AppModule);
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');
@@ -19,6 +20,6 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  await app.listen(PORT, () => console.log(`Server listen port ${PORT}`));
+  await app.listen(PORT, () => console.log(`🚀 Server listen port${PORT}`));
 }
 bootstrap();

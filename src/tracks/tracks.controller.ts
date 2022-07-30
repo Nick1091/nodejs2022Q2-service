@@ -29,20 +29,30 @@ export class TrackController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createTrackDto: CreateTrackDto): Promise<ITrack> {
-    if (createTrackDto.artistId !== undefined) {
+  async create(@Body() createTrackDto: CreateTrackDto) {
+    if (
+      createTrackDto.artistId !== undefined &&
+      createTrackDto.artistId !== null
+    ) {
       const artist = await this.artistsService.findArtist(
         createTrackDto.artistId,
       );
       createTrackDto = artist
         ? createTrackDto
         : { ...createTrackDto, artistId: null };
+    } else {
+      delete createTrackDto.artistId;
     }
-    if (createTrackDto.albumId !== undefined) {
+    if (
+      createTrackDto.albumId !== undefined &&
+      createTrackDto.albumId !== null
+    ) {
       const album = await this.albumsService.findAlbum(createTrackDto.albumId);
       createTrackDto = album
         ? createTrackDto
         : { ...createTrackDto, albumId: null };
+    } else {
+      delete createTrackDto.albumId;
     }
     return await this.trackService.create(createTrackDto);
   }
@@ -65,19 +75,29 @@ export class TrackController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    if (updateTrackDto.artistId !== undefined) {
+    if (
+      updateTrackDto.artistId !== undefined &&
+      updateTrackDto.artistId !== null
+    ) {
       const artist = await this.artistsService.findArtist(
         updateTrackDto.artistId,
       );
       updateTrackDto = artist
         ? updateTrackDto
         : { ...updateTrackDto, artistId: null };
+    } else {
+      delete updateTrackDto.artistId;
     }
-    if (updateTrackDto.albumId !== undefined) {
+    if (
+      updateTrackDto.albumId !== undefined &&
+      updateTrackDto.albumId !== null
+    ) {
       const album = await this.albumsService.findAlbum(updateTrackDto.albumId);
       updateTrackDto = album
         ? updateTrackDto
         : { ...updateTrackDto, albumId: null };
+    } else {
+      delete updateTrackDto.albumId;
     }
     return await this.trackService.update(id, updateTrackDto);
   }
@@ -85,7 +105,7 @@ export class TrackController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    await this.favsService.removeTrackId(id);
+    // await this.favsService.removeTrackId(id);
     return await this.trackService.remove(id);
   }
 }
