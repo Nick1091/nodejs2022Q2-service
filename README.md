@@ -7,25 +7,35 @@
 
 ## Downloading
 
-```
-git clone {repository URL}
-```
+- git clone https://github.com/Nick1091/nodejs2022Q2-service
+
 
 ## Installing NPM modules
 
-```
-npm install
-```
+- checkout service-part-2 branch
+- rename .env.example to .env
+- npm install
+
 
 ## Running application
 
 ```
-npm start
+docker-compose up -d
 ```
+## Stop application
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+```
+docker-compose down
+```
+## Scanning images
+
+```
+npm run scan:app
+```
+```
+npm run scan:db
+``` 
+
 
 ## Testing
 
@@ -55,18 +65,8 @@ To run only specific test suite with authorization
 npm run test:auth -- <path to suite>
 ```
 
-### Auto-fix and format
+### Auto-fix
 
 ```
 npm run lint
 ```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
