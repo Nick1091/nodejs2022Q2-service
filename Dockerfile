@@ -1,9 +1,9 @@
-FROM node:alpine
+FROM node:16-alpine
 WORKDIR /app
 COPY package*.json ./
-COPY tsconfig.json ./
-RUN npm install
+RUN npm ci && npm cache clean --force
 COPY . .
-RUN npx prisma generate && npm run build
+# RUN npx prisma generate && npm run build
+RUN npx prisma generate
 EXPOSE ${PORT}
 CMD [ "npm", "run", "start:prisma:dev" ]

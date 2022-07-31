@@ -13,15 +13,18 @@ export class FavsService {
     if (!track)
       throw new UnprocessableEntityException(ERRORS_MSGS.FAVS.DOES_EXIST_TRACK);
     const favs = await this.prisma.favorite.findMany();
-    let id = favs[0].id;
     if (!favs.length) {
       const favTrack = await this.prisma.favorite.create({ data: {} });
-      id = favTrack.id;
+      await this.prisma.track.update({
+        where: { id: track.id },
+        data: { favoriteId: favTrack.id },
+      });
+    } else {
+      await this.prisma.track.update({
+        where: { id: track.id },
+        data: { favoriteId: favs[0].id },
+      });
     }
-    await this.prisma.track.update({
-      where: { id: track.id },
-      data: { favoriteId: id },
-    });
     return;
   }
 
@@ -30,22 +33,25 @@ export class FavsService {
       where: { id },
       data: { favoriteId: { set: null } },
     });
+    return;
   }
 
   async createArtist(artist: IArtist) {
     if (!artist)
       throw new UnprocessableEntityException(ERRORS_MSGS.FAVS.DOES_EXIST_TRACK);
     const favs = await this.prisma.favorite.findMany();
-    let id = favs[0].id;
     if (!favs.length) {
       const favArtist = await this.prisma.favorite.create({ data: {} });
-      id = favArtist.id;
+      await this.prisma.artist.update({
+        where: { id: artist.id },
+        data: { favoriteId: favArtist.id },
+      });
+    } else {
+      await this.prisma.artist.update({
+        where: { id: artist.id },
+        data: { favoriteId: favs[0].id },
+      });
     }
-    await this.prisma.artist.update({
-      where: { id: artist.id },
-      data: { favoriteId: id },
-    });
-    return;
   }
 
   async removeArtist(id: string) {
@@ -53,21 +59,25 @@ export class FavsService {
       where: { id },
       data: { favoriteId: { set: null } },
     });
+    return;
   }
 
   async createAlbum(album: IAlbum) {
     if (!album)
       throw new UnprocessableEntityException(ERRORS_MSGS.FAVS.DOES_EXIST_TRACK);
     const favs = await this.prisma.favorite.findMany();
-    let id = favs[0].id;
     if (!favs.length) {
-      const favArtist = await this.prisma.favorite.create({ data: {} });
-      id = favArtist.id;
+      const favAlbum = await this.prisma.favorite.create({ data: {} });
+      await this.prisma.album.update({
+        where: { id: album.id },
+        data: { favoriteId: favAlbum.id },
+      });
+    } else {
+      await this.prisma.album.update({
+        where: { id: album.id },
+        data: { favoriteId: favs[0].id },
+      });
     }
-    await this.prisma.album.update({
-      where: { id: album.id },
-      data: { favoriteId: id },
-    });
     return;
   }
 
@@ -76,6 +86,7 @@ export class FavsService {
       where: { id },
       data: { favoriteId: { set: null } },
     });
+    return;
   }
 
   async findAll() {
@@ -98,9 +109,9 @@ export class FavsService {
     });
     const fav = favs[0];
     return {
-      artists: fav.artists ?? [],
-      albums: fav.albums ?? [],
-      tracks: fav.tracks ?? [],
+      artists: favs.length && fav.artists ? fav.artists : [],
+      albums: favs.length && fav.albums ? fav.albums : [],
+      tracks: favs.length && fav.tracks ? fav.tracks : [],
     };
   }
 }

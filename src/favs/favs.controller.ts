@@ -39,7 +39,7 @@ export class FavsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     await this.trackService.findOne(id);
-    await this.favsService.removeTrack(id);
+    return await this.favsService.removeTrack(id);
   }
 
   @Post('artist/:id')
@@ -57,7 +57,7 @@ export class FavsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     await this.artistsService.findOne(id);
-    await this.favsService.removeArtist(id);
+    return await this.favsService.removeArtist(id);
   }
 
   @Post('album/:id')
@@ -75,7 +75,7 @@ export class FavsController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
     await this.albumsService.findOne(id);
-    await this.favsService.removeAlbum(id);
+    return await this.favsService.removeAlbum(id);
   }
 
   @Get()

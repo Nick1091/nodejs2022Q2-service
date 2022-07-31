@@ -33,7 +33,7 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     networks:
       - custom-network
-    # command: postgres -c logging_collector=on
+    command: postgres -c logging_collector=on
     volumes:
       - pg_data:${PGDATA}
 

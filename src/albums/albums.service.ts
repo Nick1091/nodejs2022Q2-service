@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { ERRORS_MSGS } from 'src/constants';
 import { IAlbum } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -30,7 +29,6 @@ export class AlbumsService {
   }
 
   async findOne(id: string) {
-    console.log(id);
     const album = await this.prisma.album.findFirst({
       where: { id: id },
       // select: { artist: true },

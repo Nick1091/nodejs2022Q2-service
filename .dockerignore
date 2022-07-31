@@ -2,7 +2,8 @@ node_modules
 .git
 .idea
 .vscode
-database/Dockerfile
+database
+dist
 docker-compose.yaml
 test
 .gitignore
@@ -11,3 +12,6 @@ test
 Dockerfile
 README.md
 dist
+.eslint.js
+.prettierignore
+.prettierrc
