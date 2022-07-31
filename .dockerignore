@@ -1,0 +1,17 @@
+node_modules
+.git
+.idea
+.vscode
+database
+dist
+docker-compose.yaml
+test
+.gitignore
+.dockerignore
+.env.example
+Dockerfile
+README.md
+dist
+.eslint.js
+.prettierignore
+.prettierrc
