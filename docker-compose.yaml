@@ -1,48 +1,45 @@
 version: '3.9'
 services:
   app:
+    # image: nick109119/nodejs2022q2-service_api
     container_name: app
     build: 
       context: .
       dockerfile: ./Dockerfile
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
+    depends_on:
+      - postgres
     ports:
       - ${PORT}:${PORT}
     volumes:
       - .:/app/
       - /app/node_modules
-    depends_on:
-      - postgres
-    environment:
-      - PORT=${PORT}
     networks:
       - custom-network
   postgres:
+    # image: nick109119/nodejs2022q2-service_postgres
     container_name: postgres
     build: 
       context: .
       dockerfile: ./database/Dockerfile
     restart: unless-stopped
     command: postgres -c logging_collector=on
-    env_file:
-      - .env
+    env_file: .env
     environment:
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - PGDATA:${PGDATA}
+      - POSTGRES_PORT:${POSTGRES_PORT}
+      - POSTGRES_USER:${POSTGRES_USER}
+      - POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
+      - POSTGRES_DB:${POSTGRES_DB}
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - pg_data:${PGDATA}
     networks:
       - custom-network
 
 volumes: 
-  postgres-data:
+  pg_data:
 networks:
     custom-network:
         driver: bridge 

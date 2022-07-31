@@ -20,10 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "docker:build": "docker-compose up -d --build",
-    "docker:start": "docker-compose start",
-    "docker:stop": "docker-compose stop",
-    "docker:scan:app": "docker scan nodejs2022q2-service_app",
-    "docker:scan:db": "docker scan nodejs2022q2-service_postgres"
+    "scan:app": "docker scan nodejs2022q2-service_app",
+    "scan:db": "docker scan nodejs2022q2-service_postgres"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
