@@ -14,8 +14,9 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:prisma:dev": "npx prisma migrate deploy && npx prisma migrate dev && npx prisma generate && npm run start:dev",
-    "start:migrate:prod": "prisma migrate deploy && npm run start:prod",
+    "start:prisma:devbuild": "npx prisma migrate deploy && npx prisma migrate dev && npx prisma generate && npm run start:dev",
+    "start:prisma:dev": "npx prisma migrate dev && npm run start:dev",
+    "start:migrate:prod": "npx prisma migrate deploy && npm run start:prod",
     "prisma:migrate": "npx prisma migrate dev",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --config ./test/jest-e2e.json",
@@ -51,6 +52,7 @@
     "yaml": "^2.1.1"
   },
   "devDependencies": {
+    "@nestjs/config": "^2.2.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
     "@types/bcrypt": "^5.0.0",
