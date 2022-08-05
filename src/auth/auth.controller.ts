@@ -1,22 +1,37 @@
-import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import { ITokens } from './auth.interface';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './Local-auth.guard';
+import { AuthDto, RefreshTokenDto } from './dto';
+import { RefAuthGuard } from './strategy/refr-auth.guard';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
+  async signup(@Body() dto: AuthDto) {
+    const user = await this.authService.signup(dto);
+    return user;
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() dto: AuthDto): Promise<ITokens> {
+    return await this.authService.login(dto);
+  }
+
+  @Post('refresh')
+  @UseGuards(RefAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateTokens(@Body() dto: RefreshTokenDto) {
+    return await this.authService.updateTokens(dto);
   }
 }

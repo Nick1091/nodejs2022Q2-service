@@ -3,6 +3,7 @@ import { Exclude, Transform } from 'class-transformer';
 export class Users {
   id: string; // uuid v4
   login: string;
+  refreshToken: string;
 
   @Exclude()
   password: string;

@@ -9,10 +9,10 @@ import {
   HttpCode,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ArtistsService } from 'src/artists/artists.service';
-import { FavsService } from 'src/favs/favs.service';
-import { TrackService } from 'src/tracks/tracks.service';
+import { JwtAuthGuard } from 'src/auth/strategy';
 import { IAlbum } from './albums.interface';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -21,13 +21,12 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 @Controller('album')
 export class AlbumsController {
   constructor(
-    private readonly favsService: FavsService,
     private readonly artistsService: ArtistsService,
     private readonly albumsService: AlbumsService,
-    private readonly trackService: TrackService,
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
     if (
@@ -47,18 +46,21 @@ export class AlbumsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<IAlbum[]> {
     return await this.albumsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return await this.albumsService.findOne(id);
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -81,10 +83,9 @@ export class AlbumsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    // await this.trackService.removeAlbum(id);
-    // await this.favsService.removeAlbumId(id);
     return await this.albumsService.remove(id);
   }
 }

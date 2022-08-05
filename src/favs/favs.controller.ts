@@ -7,12 +7,14 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TrackService } from 'src/tracks/tracks.service';
 import { ArtistsService } from 'src/artists/artists.service';
 import { AlbumsService } from 'src/albums/albums.service';
 import { FavsService } from './favs.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtAuthGuard } from 'src/auth/strategy';
 
 @Controller('favs')
 export class FavsController {
@@ -25,6 +27,7 @@ export class FavsController {
   ) {}
 
   @Post('track/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createTrack(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -34,6 +37,7 @@ export class FavsController {
   }
 
   @Delete('track/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeTrack(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -43,6 +47,7 @@ export class FavsController {
   }
 
   @Post('artist/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createArtist(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -52,6 +57,7 @@ export class FavsController {
   }
 
   @Delete('artist/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeArtist(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -61,6 +67,7 @@ export class FavsController {
   }
 
   @Post('album/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createAlbum(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -70,6 +77,7 @@ export class FavsController {
   }
 
   @Delete('album/:id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeAlbum(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

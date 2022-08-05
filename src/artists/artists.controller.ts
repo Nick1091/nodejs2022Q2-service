@@ -9,8 +9,10 @@ import {
   HttpCode,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AlbumsService } from 'src/albums/albums.service';
+import { JwtAuthGuard } from 'src/auth/strategy';
 import { FavsService } from 'src/favs/favs.service';
 import { TrackService } from 'src/tracks/tracks.service';
 import { IArtist } from './artists.interface';
@@ -28,24 +30,28 @@ export class ArtistsController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createArtistDto: CreateArtistDto) {
     return await this.artistsService.create(createArtistDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<IArtist[]> {
     return await this.artistsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return await this.artistsService.findOne(id);
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -55,6 +61,7 @@ export class ArtistsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     // await this.trackService.removeArtist(id);

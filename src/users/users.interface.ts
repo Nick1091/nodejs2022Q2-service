@@ -3,6 +3,7 @@ export interface IUser {
   version: number; // integer number, increments on update
   createdAt: number; // timestamp of creation
   updatedAt: number; // timestamp of last update
+  refreshToken: string;
 }
 
 export interface IPostUser extends IUser {
