@@ -9,6 +9,7 @@ import { Users } from './entities/user.entity';
 import { IUpdatePassword } from './users.interface';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { comparePassword, setHashPassword } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.prisma.user.create({
-      data: createUserDto,
+      data: {
+        ...createUserDto,
+        password: await setHashPassword(createUserDto.password),
+      },
     });
 
     user.createdAt = user.updatedAt;
@@ -41,13 +45,14 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(ERRORS_MSGS.USER.USER_NOT_FOUND);
     }
-    if (user.password !== data.oldPassword) {
+    if (!(await comparePassword(data.oldPassword, user.password))) {
       throw new ForbiddenException(ERRORS_MSGS.USER.PASSWORD_WRONG);
     }
+    const hash = await setHashPassword(data.newPassword);
     const newUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: data.newPassword,
+        password: hash,
         version: { increment: VERSIONS.FIRST },
       },
     });
