@@ -2,7 +2,8 @@ export const VERSIONS = {
   FIRST: 1,
 };
 export const ERRORS_MSGS = {
-  EXPIRED_RF_TOKEN: 'Refresh token is expired',
+  EXPIRED_RF_TOKEN:
+    'Authentication failed (Refresh token is invalid or expired)',
   BAD_LOGIN: 'Incorrect login or password',
   INVALID_UUID: 'Bad request. Validation failed (uuid v4 is expected)',
   USER: {

@@ -9,12 +9,8 @@ import {
   HttpCode,
   Put,
   Delete,
-  UseGuards,
 } from '@nestjs/common';
-import { AlbumsService } from 'src/albums/albums.service';
-import { JwtAuthGuard } from 'src/auth/strategy';
-import { FavsService } from 'src/favs/favs.service';
-import { TrackService } from 'src/tracks/tracks.service';
+
 import { IArtist } from './artists.interface';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -22,36 +18,27 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(
-    private readonly favsService: FavsService,
-    private readonly artistsService: ArtistsService,
-    private readonly trackService: TrackService,
-    private readonly albumsService: AlbumsService,
-  ) {}
+  constructor(private readonly artistsService: ArtistsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createArtistDto: CreateArtistDto) {
     return await this.artistsService.create(createArtistDto);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<IArtist[]> {
     return await this.artistsService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return await this.artistsService.findOne(id);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -61,12 +48,8 @@ export class ArtistsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    // await this.trackService.removeArtist(id);
-    // await this.albumsService.removeArtist(id);
-    // await this.favsService.removeArtistId(id);
     return await this.artistsService.remove(id);
   }
 }

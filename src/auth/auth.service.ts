@@ -1,8 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto, RefreshTokenDto } from './dto';
-import { comparePassword, setHashPassword } from 'src/utils';
+import { AuthDto } from './dto';
+import { comparePassword, setHashPassword } from 'src/common/utils';
 import { plainToInstance } from 'class-transformer';
 import { Users } from 'src/users/entities/user.entity';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -52,17 +52,17 @@ export class AuthService {
     }
     const pwMAtches = await comparePassword(dto.password, user.password);
     if (!pwMAtches) throw new ForbiddenException(ERRORS_MSGS.BAD_LOGIN);
-    const tokens = this.getTokens(user.id, user.login);
+    const tokens = await this.getTokens(user.id, user.login);
 
     await this.updateUserRefreshToken(user.id, tokens.refresh_token);
 
     return tokens;
   }
 
-  private getTokens(userId: string, login: string) {
+  async getTokens(userId: string, login: string) {
     const payload = { login: login, sub: userId };
     return {
-      access_token: this.jwtService.sign(payload, {
+      accessToken: this.jwtService.sign(payload, {
         expiresIn: TOKEN_EXPIRE_TIME,
         secret: JWT_SECRET_KEY,
       }),
@@ -73,16 +73,16 @@ export class AuthService {
     };
   }
 
-  async updateTokens({ refreshToken }: RefreshTokenDto) {
+  async updateTokens(id: string, refreshToken: string) {
     const user = await this.prisma.user.findFirst({
-      where: {
-        refreshToken: refreshToken ? refreshToken : null,
-      },
+      where: { id },
     });
 
     if (!user) throw new ForbiddenException(ERRORS_MSGS.EXPIRED_RF_TOKEN);
-
-    const tokens = this.getTokens(user.id, user.login);
+    if (refreshToken !== user.refreshToken) {
+      throw new ForbiddenException(ERRORS_MSGS.EXPIRED_RF_TOKEN);
+    }
+    const tokens = await this.getTokens(user.id, user.login);
 
     await this.updateUserRefreshToken(user.id, tokens.refresh_token);
 
