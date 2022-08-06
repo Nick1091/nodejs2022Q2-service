@@ -54,7 +54,7 @@ export class AuthService {
     if (!pwMAtches) throw new ForbiddenException(ERRORS_MSGS.BAD_LOGIN);
     const tokens = await this.getTokens(user.id, user.login);
 
-    await this.updateUserRefreshToken(user.id, tokens.refresh_token);
+    await this.updateUserRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -66,25 +66,47 @@ export class AuthService {
         expiresIn: TOKEN_EXPIRE_TIME,
         secret: JWT_SECRET_KEY,
       }),
-      refresh_token: this.jwtService.sign(payload, {
+      refreshToken: this.jwtService.sign(payload, {
         expiresIn: TOKEN_REFRESH_EXPIRE_TIME,
         secret: JWT_SECRET_REFRESH_KEY,
       }),
     };
   }
 
-  async updateTokens(id: string, refreshToken: string) {
+  async decodeRt(refreshToken: string) {
+    const isDecode = this.jwtService.decode(refreshToken);
+    return isDecode;
+  }
+  async verifyJWT(token: string, secretJWT: string) {
+    const dataToken = await this.jwtService.verify(token, {
+      secret: secretJWT,
+    });
+    return dataToken;
+  }
+  verifyTokenJWT(token: string, secretJWT: string) {
+    try {
+      const dataToken = this.jwtService.verify(token, {
+        secret: secretJWT,
+      });
+      console.log(dataToken);
+      return true;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async updateTokens(refreshToken: string) {
     const user = await this.prisma.user.findFirst({
-      where: { id },
+      where: { refreshToken: refreshToken },
     });
 
     if (!user) throw new ForbiddenException(ERRORS_MSGS.EXPIRED_RF_TOKEN);
-    if (refreshToken !== user.refreshToken) {
-      throw new ForbiddenException(ERRORS_MSGS.EXPIRED_RF_TOKEN);
-    }
+    const isVerify = await this.verifyJWT(refreshToken, JWT_SECRET_REFRESH_KEY);
+    if (!isVerify) throw new ForbiddenException(ERRORS_MSGS.EXPIRED_RF_TOKEN);
+
     const tokens = await this.getTokens(user.id, user.login);
 
-    await this.updateUserRefreshToken(user.id, tokens.refresh_token);
+    await this.updateUserRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }

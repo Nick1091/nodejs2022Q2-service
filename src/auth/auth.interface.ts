@@ -1,13 +1,13 @@
 export interface ITokens {
   accessToken: string;
-  refresh_token: string;
+  refreshToken: string;
 }
 export interface JwtPayloadWithRt extends JwtPayload {
   refreshToken: string;
 }
 export interface JwtPayload {
   login: string;
-  sub: number;
+  sub: string;
 }
 export interface IPayload {
   login: string;

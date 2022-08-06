@@ -2,6 +2,7 @@ export const VERSIONS = {
   FIRST: 1,
 };
 export const ERRORS_MSGS = {
+  BAD_RT: 'Dto is invalid (no refreshToken in body)',
   EXPIRED_RF_TOKEN:
     'Authentication failed (Refresh token is invalid or expired)',
   BAD_LOGIN: 'Incorrect login or password',

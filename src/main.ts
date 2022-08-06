@@ -6,8 +6,6 @@ import { dirname, join } from 'path';
 import { parse } from 'yaml';
 import 'dotenv/config';
 import { AppModule } from './app.module';
-// import { AuthGuard } from '@nestjs/passport';
-// import { JwtAuthGuard } from './auth/strategy';
 
 const PORT = process.env.PORT || 4000;
 
@@ -24,8 +22,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  // const reflector = new Reflector();
-  // app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   await app.listen(PORT, () => console.log(`🚀 Server listen port${PORT}`));
 }
