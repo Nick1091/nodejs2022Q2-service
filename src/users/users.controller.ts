@@ -11,10 +11,12 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseFilters,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { HttpExceptionFilter } from 'src/common/exeption-filter.ts';
 
 @Controller('user')
 export class UserController {
@@ -28,6 +30,7 @@ export class UserController {
   }
 
   @Get()
+  @UseFilters(new HttpExceptionFilter())
   @HttpCode(HttpStatus.OK)
   async findAll() {
     return await this.userService.findAll();

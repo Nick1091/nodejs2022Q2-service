@@ -14,3 +14,4 @@ export const LOG_LEVEL =
     : +process.env.LOG_LEVEL;
 export const FILE_SIZE = process.env.FILE_SIZE;
 export const IS_LOG_CHECK = process.env.IS_LOG_CHECK;
+export const LOGS_DIR = process.env.LOGS_DIR;

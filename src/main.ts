@@ -14,10 +14,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-
   app.useLogger(new MyLogger());
-  const Logger = new MyLogger();
-  Logger.setContext(bootstrap.name);
+  const logger = new MyLogger();
+  logger.setContext(bootstrap.name);
+
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error(
+      `Unhandled ${promise} rejection occurred at: ${reason}`,
+      bootstrap.name,
+    );
+  });
+  process.on('uncaughtException', (err: Error) => {
+    logger.warn(`Uncaught exception occurred at: ${err}`, bootstrap.name);
+    process.exit(1);
+  });
 
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');
@@ -30,6 +40,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   await app.listen(PORT, () => console.log(`🚀 Server listen port${PORT}`));
 }

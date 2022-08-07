@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { UserModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { TrackModule } from './tracks/tracks.module';
@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/strategy';
 import { LoggerModule } from './logger/logger.module';
 import { LoggerMiddleware } from './common/midleware/logger.middleware';
+import { AllExceptionsFilter } from './common/all-exeption-filter.ts';
 
 @Module({
   imports: [
@@ -31,6 +32,10 @@ import { LoggerMiddleware } from './common/midleware/logger.middleware';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
