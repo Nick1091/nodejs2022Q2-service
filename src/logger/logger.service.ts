@@ -39,6 +39,9 @@ export class MyLogger extends ConsoleLogger {
   }
 
   private writeToFile = (message: string, type: string): void => {
+    if (!this.isLogCheck) {
+      return;
+    }
     const dataFile = `${type}${message}`;
     if (!this.fileName) {
       this.createFileAndSave(dataFile, type);
@@ -49,21 +52,76 @@ export class MyLogger extends ConsoleLogger {
 
   createFileAndSave(message: string, type: string) {
     this.fileName = `${type}_${Date.now()}.log`;
-    fs.appendFile(this.fileName, `${message}`, 'utf8', (err) => {
-      if (err) throw err;
+    fs.readdir('LOGS', (err) => {
+      if (err) {
+        fs.mkdir('LOGS', (error) => {
+          if (error) throw Error(error.message);
+        });
+        fs.appendFile(`LOGS/${this.fileName}`, `${message}`, 'utf8', (err) => {
+          if (err) throw err;
+        });
+      } else {
+        fs.appendFile(`LOGS/${this.fileName}`, `${message}`, 'utf8', (err) => {
+          if (err) throw err;
+        });
+      }
     });
   }
 
   apFile(message: string, type: string) {
-    fs.stat(this.fileName, (err, stat) => {
+    fs.stat(`LOGS/${this.fileName}`, (err, stat) => {
       if (err) {
-        super.error.call(this, `Fail, not such file ${this.fileName}`);
+        fs.readdir('LOGS', (err) => {
+          if (err) {
+            fs.mkdir('LOGS', (error) => {
+              if (error) throw Error(error.message);
+            });
+            fs.appendFile(
+              `LOGS/${this.fileName}`,
+              `${message}`,
+              'utf8',
+              (err) => {
+                if (err) throw err;
+              },
+            );
+          } else {
+            fs.appendFile(
+              `LOGS/${this.fileName}`,
+              `${message}`,
+              'utf8',
+              (err) => {
+                if (err) throw err;
+              },
+            );
+          }
+        });
       } else {
         if (stat.size > this.fileSize) {
           this.fileName = `${type}_${Date.now()}.log`;
         }
-        fs.appendFile(this.fileName, `${message}`, 'utf8', (err) => {
-          if (err) throw err;
+        fs.readdir('LOGS', (err) => {
+          if (err) {
+            fs.mkdir('LOGS', (error) => {
+              if (error) throw Error(error.message);
+            });
+            fs.appendFile(
+              `LOGS/${this.fileName}`,
+              `${message}`,
+              'utf8',
+              (err) => {
+                if (err) throw err;
+              },
+            );
+          } else {
+            fs.appendFile(
+              `LOGS/${this.fileName}`,
+              `${message}`,
+              'utf8',
+              (err) => {
+                if (err) throw err;
+              },
+            );
+          }
         });
       }
     });
