@@ -85,7 +85,7 @@ export class AuthService {
   }
   verifyTokenJWT(token: string, secretJWT: string) {
     try {
-      const dataToken = this.jwtService.verify(token, {
+      this.jwtService.verify(token, {
         secret: secretJWT,
       });
       return true;

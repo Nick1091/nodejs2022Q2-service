@@ -1,26 +1,20 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { ConsoleLogger } from '@nestjs/common';
-import { existsSync, mkdirSync, appendFileSync } from 'fs';
 import * as fs from 'fs';
-import {
-  FILE_SIZE,
-  IS_LOG_CHECK,
-  LOGS_DIR,
-  LOG_LEVEL,
-} from 'src/common/config';
+import { FILE_SIZE, IS_LOG_CHECK, LOG_LEVEL } from 'src/common/config';
 import { LOG_ARGS } from 'src/constants';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class MyLogger extends ConsoleLogger {
   private fileSize: number;
   private isLogCheck: boolean;
-  private file: string;
+  private fileName: string;
 
   constructor() {
     super();
     this.setLogLevels(LOG_ARGS.slice(0, LOG_LEVEL));
     this.isLogCheck = Boolean(IS_LOG_CHECK);
-    this.fileSize = +FILE_SIZE * 1024;
+    this.fileSize = +FILE_SIZE * 1000;
   }
 
   log(message: string, context?: string) {
@@ -44,25 +38,34 @@ export class MyLogger extends ConsoleLogger {
     this.writeToFile(message, 'verbose');
   }
 
-  writeToFile(message: string, fileName: string) {
-    if (existsSync(LOGS_DIR)) {
-      appendFileSync(
-        `${LOGS_DIR}/${fileName}.log`,
-        `timestamp: ${new Date().toLocaleString()}, ${message} \n`,
-      );
+  private writeToFile = (message: string, type: string): void => {
+    const dataFile = `${type}${message}`;
+    if (!this.fileName) {
+      this.createFileAndSave(dataFile, type);
     } else {
-      mkdirSync(LOGS_DIR);
-      // if ( getFilesize(this.file) > 1000) {
-      this.file = `${LOGS_DIR}/${fileName}${new Date().toLocaleString()}.log`;
-      appendFileSync(
-        this.file,
-        `timestamp: ${new Date().toLocaleString()}, ${message} \n`,
-      );
+      this.apFile(dataFile, type);
     }
+  };
+
+  createFileAndSave(message: string, type: string) {
+    this.fileName = `${type}_${Date.now()}.log`;
+    fs.appendFile(this.fileName, `${message}`, 'utf8', (err) => {
+      if (err) throw err;
+    });
   }
-  // getFilesize(filename) {
-  //   const stats = fs.statSync(filename);
-  //   const fileSizeInBytes = stats.size;
-  //   return fileSizeInBytes;
-  // }
+
+  apFile(message: string, type: string) {
+    fs.stat(this.fileName, (err, stat) => {
+      if (err) {
+        super.error.call(this, `Fail, not such file ${this.fileName}`);
+      } else {
+        if (stat.size > this.fileSize) {
+          this.fileName = `${type}_${Date.now()}.log`;
+        }
+        fs.appendFile(this.fileName, `${message}`, 'utf8', (err) => {
+          if (err) throw err;
+        });
+      }
+    });
+  }
 }

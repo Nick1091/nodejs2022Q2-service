@@ -12,7 +12,7 @@
 
 ## Installing NPM modules
 
-- checkout service-part-2 branch
+- checkout logging branch
 - rename .env.example to .env
 - npm install
 
@@ -40,18 +40,6 @@ npm run scan:db
 ## Testing
 
 After application running open new terminal and enter:
-
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
 
 To run all test with authorization
 
