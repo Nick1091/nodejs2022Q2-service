@@ -9,7 +9,7 @@ import { Users } from './entities/user.entity';
 import { IUpdatePassword } from './users.interface';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { comparePassword, setHashPassword } from 'src/common/utils';
+import { comparePassword, setHashPassword } from 'src/utils';
 
 @Injectable()
 export class UserService {

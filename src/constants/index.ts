@@ -1,6 +1,7 @@
 export const VERSIONS = {
   FIRST: 1,
 };
+export const LOG_ARGS = ['error', 'log', 'warn', 'debug', 'verbose'];
 export const ERRORS_MSGS = {
   BAD_RT: 'Dto is invalid (no refreshToken in body)',
   EXPIRED_RF_TOKEN:

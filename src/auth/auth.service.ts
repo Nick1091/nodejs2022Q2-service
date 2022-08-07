@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
-import { comparePassword, setHashPassword } from 'src/common/utils';
+import { comparePassword, setHashPassword } from 'src/utils';
 import { plainToInstance } from 'class-transformer';
 import { Users } from 'src/users/entities/user.entity';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
