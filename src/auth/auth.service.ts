@@ -88,7 +88,6 @@ export class AuthService {
       const dataToken = this.jwtService.verify(token, {
         secret: secretJWT,
       });
-      console.log(dataToken);
       return true;
     } catch (err) {
       return null;

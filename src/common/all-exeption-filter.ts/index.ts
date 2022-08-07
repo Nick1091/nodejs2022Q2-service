@@ -27,17 +27,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
-    if (exception instanceof HttpException) {
+    if (exception.status === HttpStatus.UNAUTHORIZED) {
       this.setErrorResponse(exception, req, res);
-    } else if (exception.status === HttpStatus.UNAUTHORIZED) {
       const statusCode = HttpStatus.UNAUTHORIZED;
       const response = {
         statusCode: statusCode,
         error: 'Unauthorized',
+        timeStamp: new Date().toISOString(),
       };
       const errorLog = this.getErrorLog(response, req);
       this.logger.error(errorLog, AllExceptionsFilter.name);
       res.status(statusCode).json(response);
+    } else if (exception instanceof HttpException) {
+      this.setErrorResponse(exception, req, res);
     } else if (exception instanceof PrismaClientKnownRequestError) {
       this.setPrismaErrorsHandler(exception, req, res);
     } else {
@@ -45,6 +47,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const response = {
         statusCode: statusCode,
         error: 'Critical internal server error occurred!',
+        timeStamp: new Date().toISOString(),
       };
       const errorLog = this.getErrorLog(response, req);
       this.logger.error(errorLog, AllExceptionsFilter.name);
