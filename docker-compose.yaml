@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    container_name: app
+    env_file: .env
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - custom-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+  postgres:
+    build: 
+      context: .
+      dockerfile: ./database/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    container_name: postgres
+    environment:
+      - POSTGRES_USER:${POSTGRES_USER}
+      - POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
+      - POSTGRES_DB:${POSTGRES_DB}
+      - PGDATA:${PGDATA}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - custom-network
+    command: postgres -c logging_collector=on
+    volumes:
+      - pg_data:${PGDATA}
+
+networks:
+  custom-network:
+    name: custom-network
+    driver: bridge
+
+volumes:
+  pg_data:
